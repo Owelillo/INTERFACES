@@ -1,21 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package faltasasistencia;
 
 import java.awt.*;
 import java.awt.event.*;
 
-/**
- *
- * @author Rinex
- */
-public class FaltasAsistencia extends Frame implements ActionListener {
+public class FaltasAsistencia extends Frame {
+
+    private TextField[] txtFields;  // Arreglo para los TextFields
 
     public FaltasAsistencia() {
-        addWindowListener(new WindowAdapter(){
-            public void windowClosing(WindowEvent e){
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
                 System.exit(0);
             }
         });
@@ -33,79 +27,80 @@ public class FaltasAsistencia extends Frame implements ActionListener {
         pnlEast1.setLayout(new GridLayout(4, 1));
         pnlEast2.setLayout(new GridLayout(4, 1));
 
-        
         Choice ch = new Choice();
-        
-        String nombres[] ={
+        String[] nombres = {
             "Pepe Dominguez", "Alfonso Villanueva", "David Catedral",
             "Gary Volsky"
         };
-        for(String nombre : nombres){
+        
+        for (String nombre : nombres) {
             Label label = new Label(nombre);
             pnlSouth.add(label);
         }
-        int contador = 0;
-        while(contador < 4){
-        Label west = new Label("Total");
-        pnlEast1.add(west);
-        contador++;
-    }
-        int contadorCb = 0;
-        while(contadorCb < nombres.length * 7){
-            Checkbox cb = new Checkbox();
-            pnlCenter.add(cb);
-            contadorCb++;
+
+        // Añadir los labels "Total" en el panel Este
+        for (int i = 0; i < 4; i++) {
+            Label west = new Label("Total");
+            pnlEast1.add(west);
         }
-        
-        int contadorFechas = 0;
+
+        // Crear TextFields y almacenarlos en un arreglo
+        txtFields = new TextField[4]; // Hay 4 estudiantes
+        for (int i = 0; i < txtFields.length; i++) {
+            txtFields[i] = new TextField("0"); // Inicializado a "0"
+            pnlEast2.add(txtFields[i]);
+        }
+
+        // Añadir Checkboxes con un ItemListener
+        for (int i = 0; i < nombres.length; i++) {
+            for (int j = 0; j < 7; j++) {
+                Checkbox cb = new Checkbox();
+                final int studentIndex = i; // Necesario para acceder a la variable dentro del listener
+
+                // Añadir el ItemListener dentro de la inicialización
+                cb.addItemListener(new ItemListener() {
+                    @Override
+                    public void itemStateChanged(ItemEvent e) {
+                        // Obtener el valor actual del TextField correspondiente
+                        int currentCount = Integer.parseInt(txtFields[studentIndex].getText());
+
+                        // Incrementar o decrementar el valor dependiendo si el checkbox está marcado o no
+                        if (cb.getState()) {
+                            currentCount++;
+                        } else {
+                            currentCount--;
+                        }
+
+                        // Actualizar el TextField con el nuevo valor
+                        txtFields[studentIndex].setText(String.valueOf(currentCount));
+                    }
+                });
+
+                pnlCenter.add(cb);
+            }
+        }
+
+        // Añadir fechas al Choice
         int fecha = 7;
-
-        while (contadorFechas < 4) {
+        for (int i = 0; i < 4; i++) {
             ch.add(fecha + "/10/24");
-            pnl.add(ch);
-            contadorFechas++;
-            fecha = fecha + 7;
+            fecha += 7;
         }
-        
- 
+        pnl.add(ch);
 
- 
-        TextField txt = new TextField();
-        TextField txt1 = new TextField();
-        TextField txt2 = new TextField();
-        TextField txt3 = new TextField();
-        
-        add(pnlSouth);
-        add(pnl, BorderLayout.NORTH);
+        // Agregar los paneles a la interfaz
         add(pnlSouth, BorderLayout.WEST);
         add(pnlCenter, BorderLayout.CENTER);
         pnlEast.add(pnlEast1, BorderLayout.WEST);
         pnlEast.add(pnlEast2, BorderLayout.EAST);
         add(pnlEast, BorderLayout.EAST);
-        pnl.add(ch);
-       
-        
-        pnlEast2.add(txt);
-        pnlEast2.add(txt1);
-        pnlEast2.add(txt2);
-        pnlEast2.add(txt3);
-
-
-
+        add(pnl, BorderLayout.NORTH);
 
         this.setSize(600, 300);
         this.setVisible(true);
-
     }
 
     public static void main(String[] args) {
-        FaltasAsistencia mainFrame = new FaltasAsistencia();
-        mainFrame.setVisible(true);
+        new FaltasAsistencia();
     }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
 }
